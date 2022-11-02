@@ -29,5 +29,38 @@ def execute_query(query, params=None):
     except OSError as e:
         print(f"The error '{e}' occurred or the hero name is already taken")
 
-create_connection("postgres", "postgres", "postgres")
+#create_connection("postgres", "postgres", "postgres")
 
+def select_all_heros():
+    query = """
+        SELECT * FROM heroes
+    """
+    list_of_heros = execute_query(query).fetchall()
+    for record in list_of_heros:
+        print(record[1])
+
+def select_all_heros_numbers():
+    query = """
+        SELECT * FROM heroes
+    """
+    list_of_heros_numbers = execute_query(query).fetchall()
+    for record in list_of_heros_numbers:
+        print(record[0],record[1])
+
+def select_heros_about():
+    query = """
+        SELECT * FROM heroes
+    """
+    list_of_about = execute_query(query).fetchall()
+    for record in list_of_about:
+        print(record[2])
+
+def select_heros_bio():
+    query = """
+        SELECT * FROM heroes
+    """
+    list_of_bio = execute_query(query).fetchall()
+    for record in list_of_bio:
+        print(record[3])
+        
+select_all_heros_numbers()
