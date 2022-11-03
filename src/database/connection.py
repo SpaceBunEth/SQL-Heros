@@ -75,6 +75,16 @@ def select_ability_types():
     for record in list_of_ability_types:
         print(record[1])
 
+#========= Print Ability_type_id ==
+
+def select_ability_types_numbers():
+    query = """
+        SELECT * FROM ability_types
+    """
+    list_of_ability_types = execute_query(query).fetchall()
+    for record in list_of_ability_types:
+        print(record[0],'  ',record[1])
+
 #========= INSERT HERO ============
 def insert_new_hero():
     input("Press Enter to Create a New Hero")
@@ -89,6 +99,64 @@ def insert_new_hero():
     """    
     execute_query(query,(name,about,bio)) 
     #query,(name,) 
+
+#========== INSERT Ability ============
+
+def insert_new_ability():
+    input('PRESS ENTER TO CREATE NEW ABILITY')
+    name = input('Ability Name:  ')
+    query = """
+        INSERT INTO ability_types
+            (name)
+        Values(%s);
+    """
+    execute_query(query,(name,))
+#========== Assign New Ability ========
+
+def assign_hero_ability():
+    input('PRESS ENTER TO ASSIGN A HERO A NEW ABILITY')
+    
+    query = """
+        SELECT * FROM heroes
+    """
+    list_of_heros_numbers = execute_query(query).fetchall()
+
+    query = """
+        SELECT * FROM ability_types
+    """
+    list_of_ability_types = execute_query(query).fetchall()
+    # Print out hero and ability ids and names
+    print("HEROES NUMBER")
+    for record in list_of_heros_numbers:
+        print(record[0],'  ',record[1])
+    print('\n')
+    print("ABILITY NUMBER")
+    for record in list_of_ability_types:
+        print(record[0],'  ',record[1])
+
+    print('\n')
+    hero_id = input('ENTER A NUMBER TO PICK A HERO: ')
+    ability_id = input('ENTER A NUMBER TO PICK A ABILITY: ')
+
+    query = """
+        INSERT INTO abilities (hero_id, ability_type_id)
+        VALUES(%s,%s)
+    """
+    execute_query(query,(hero_id,ability_id)) 
+
+    query = """
+        SELECT DISTINCT heroes.id,heroes.name, string_agg(ability_types.name,' ')
+        FROM heroes
+        JOIN abilities ON heroes.id = abilities.hero_id
+        JOIN ability_types ON ability_types.id = abilities.ability_type_id
+        WHERE heroes.id = %s
+        GROUP BY heroes.id
+    """
+    list_assigned_hero = execute_query(query,(hero_id,))
+    print('\n')
+
+    for record in list_assigned_hero:
+        print(record[1],'HAS BEEN ASSIGNED',record[2], 'ABILITY')
 
 #========== REMOVE HERO ===============
 #DELETE FROM table_name WHERE condition;
@@ -115,7 +183,8 @@ def select_hero_ability_type():
     for record in list_of_heros_ability:
         print('\n',record[0],'  ',record[1],'  ',record[2])
     print('\n')
-#======== Command list ============         
+#======== Command list ============  
+#        
 
 command_dict = {
     'All': select_all_heros,
@@ -125,14 +194,28 @@ command_dict = {
     'Ability_Types': select_ability_types,
     'New_Hero': insert_new_hero,
     'Delete_Hero': delete_hero,
-    'Hero_Ability': select_hero_ability_type
+    'Hero_Ability': select_hero_ability_type,
+    'Ability_Numbers': select_ability_types_numbers,
+    'New_Ability':insert_new_ability,
+    'Assign_Ability':assign_hero_ability
+    
 }
+
+def help_commands():
+    print('===== List of Commands =====')
+    for key in command_dict:
+        print('\n','    ',key)
+    print('\n')
+
 # command_dict[command]()
 def input_func():
     command = input("ENTER COMMAND: ")
     for key in command_dict:
         if command in command_dict:
             command_dict[command]()
+            input_func()
+        elif command == 'help':
+            help_commands()
             input_func()
         else:
             print('---- Not A Valid Command -----')
