@@ -41,6 +41,7 @@ def select_all_heros():
     """
     list_of_heros = execute_query(query).fetchall()
     for record in list_of_heros:
+        print('\n')
         print(record[1])
 
 def select_all_heros_numbers():
@@ -49,7 +50,8 @@ def select_all_heros_numbers():
     """
     list_of_heros_numbers = execute_query(query).fetchall()
     for record in list_of_heros_numbers:
-        print(record[0],record[1])
+        print('\n')
+        print(record[0],'  ',record[1])
 
 def select_heros_about():
     query = """
@@ -65,6 +67,7 @@ def select_heros_bio():
     """
     list_of_bio = execute_query(query).fetchall()
     for record in list_of_bio:
+        print('\n')
         print(record[3])
 
 def select_ability_types():
@@ -72,7 +75,9 @@ def select_ability_types():
         SELECT * FROM ability_types
     """
     list_of_ability_types = execute_query(query).fetchall()
+    print('Types of Abilities')
     for record in list_of_ability_types:
+        print('\n')
         print(record[1])
 
 #========= Print Ability_type_id ==
@@ -83,6 +88,7 @@ def select_ability_types_numbers():
     """
     list_of_ability_types = execute_query(query).fetchall()
     for record in list_of_ability_types:
+        print('\n')
         print(record[0],'  ',record[1])
 
 #========= INSERT HERO ============
@@ -98,6 +104,7 @@ def insert_new_hero():
         VALUES (%s,%s,%s);
     """    
     execute_query(query,(name,about,bio)) 
+    print(f'HERO {name} HAS BEEN ADDED')
     #query,(name,) 
 
 #========== INSERT Ability ============
@@ -111,6 +118,7 @@ def insert_new_ability():
         Values(%s);
     """
     execute_query(query,(name,))
+    print(f'New Ability {name} Added')
 #========== Assign New Ability ========
 
 def assign_hero_ability():
@@ -158,6 +166,24 @@ def assign_hero_ability():
     for record in list_assigned_hero:
         print(record[1],'HAS BEEN ASSIGNED',record[2], 'ABILITY')
 
+#========== Update HERO Name ==========
+
+def update_hero_name():
+    print('PRESS ENTER TO UPDATE HEROS NAME')
+    select_all_heros_numbers()
+    hero_id = input('ENTER A HEROS NUMBER YOU WOULD LIKE TO CHANGE: ')
+    name = input(f'ENTER HERO {hero_id}s NEW NAME: ')
+    query = """
+        UPDATE heroes
+        SET name= %s
+        WHERE id = %s
+    """
+
+    list_hero_name = execute_query(query,(name,hero_id))
+    print('\n')
+    select_all_heros_numbers()   
+
+
 #========== REMOVE HERO ===============
 #DELETE FROM table_name WHERE condition;
 
@@ -184,20 +210,20 @@ def select_hero_ability_type():
         print('\n',record[0],'  ',record[1],'  ',record[2])
     print('\n')
 #======== Command list ============  
-#        
 
 command_dict = {
-    'All': select_all_heros,
-    'All_Numbers': select_all_heros_numbers,
-    'All_About': select_heros_about,
-    'All_Bio': select_heros_bio,
-    'Ability_Types': select_ability_types,
+    # 'List_All': select_all_heros,
+    'List_All_Heros': select_all_heros_numbers,
+    'List_All_About': select_heros_about,
+    'List_All_Bio': select_heros_bio,
+    'List_Ability_Types': select_ability_types,
+    'List_Hero_Ability': select_hero_ability_type,
+    'List_Ability_Numbers': select_ability_types_numbers,
     'New_Hero': insert_new_hero,
     'Delete_Hero': delete_hero,
-    'Hero_Ability': select_hero_ability_type,
-    'Ability_Numbers': select_ability_types_numbers,
     'New_Ability':insert_new_ability,
-    'Assign_Ability':assign_hero_ability
+    'Assign_Ability':assign_hero_ability,
+    'Update_Hero':update_hero_name
     
 }
 
@@ -209,6 +235,7 @@ def help_commands():
 
 # command_dict[command]()
 def input_func():
+    print('\n')
     command = input("ENTER COMMAND: ")
     for key in command_dict:
         if command in command_dict:
