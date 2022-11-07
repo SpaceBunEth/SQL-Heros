@@ -13,3 +13,15 @@ To complete the assignment, you must complete the following:
 1. Interactive creation, update, delete of a hero in the terminal via Python script, with commands that are available for the README.md
 ---
 
+C.R.U.D
+---
+CREATE
+
+READ
+
+UPDATE
+
+DELETE
+
+---
+
